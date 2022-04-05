@@ -142,21 +142,23 @@ double norma(char *expressao, double *aproximacao_inicial)
 //     }
 // }
 
-// uint calcula_expressao(void *expressao, double *aproximacao_inicial)
-// {
-//     int contador; /* Numero de variaveis na função*/
-//     char **nomes_variaveis;
-//     evaluator_get_variables(expressao, &nomes_variaveis, &contador);
+uint calcula_expressao(void *expressao, double *aproximacao_inicial)
+{
+    int contador; /* Numero de variaveis na função*/
+    char **nomes_variaveis;
+    void *funcao;
+    funcao = evaluator_create(expressao);
+    evaluator_get_variables(funcao, &nomes_variaveis, &contador);
 
-//     printf("f(x) = %s\n", evaluator_get_string(expressao));
-//     printf("Contador = %d\n", contador);
-//     printf("Nomes Variaveis = %s\n", nomes_variaveis[0]);
-//     printf("Aproximação inicial = %lf\n", aproximacao_inicial[0]);
-//     //uint resultado = evaluator_evaluate(expressao, contador, nomes_variaveis, aproximacao_inicial);
-//     uint resultado = 2;
+    printf("f(x) = %s\n", evaluator_get_string(funcao));
+    printf("Contador = %d\n", contador);
+    printf("Nomes Variaveis = %s\n", nomes_variaveis[0]);
+    printf("Aproximação inicial = %lf\n", aproximacao_inicial[0]);
+    uint resultado = evaluator_evaluate(funcao, contador, nomes_variaveis, aproximacao_inicial);
+    //uint resultado = 2;
 
-//     return resultado;
-// }
+    return resultado;
+}
 
 double **calcular_matriz_jacobiana(void **matriz_jacobiana, double **matriz_jacobiana_calc, double *aproximacao_inicial, int n_variaveis)
 {

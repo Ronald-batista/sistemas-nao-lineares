@@ -48,9 +48,9 @@ int main()
     imprime_matriz_double(matriz_jacobiana_calc, 1, n_variaveis);
 
     // calcula o valor da expressão no ponto da aproximação
-    // printf("\n ------------ CALCULAR EXPRESSAO ------------\n");
-    // uint valor = calcula_expressao(expressao, aproximacao_inicial);
-    // printf("valor = %d\n", valor);
+     printf("\n ------------ CALCULAR EXPRESSAO ------------\n");
+     uint valor = calcula_expressao(expressao, aproximacao_inicial);
+     printf("valor = %d\n", valor);
 
     // eliminação de gauss para J(x) * delta = aproximacao_inicial;
     // eliminacaoGauss(matriz_jacobiana, delta, valor);
