@@ -84,7 +84,7 @@ void gerar_matriz_jacobiana(void **matriz_jacobiana, char *expressao, int n_vari
         for (j = 0; j < n_variaveis; j++)
         {
             funcao_derivada_prim = evaluator_derivative(funcao, nomes_variaveis[j]);
-            matriz_jacobiana[i] = funcao_derivada_prim;
+            matriz_jacobiana[j] = funcao_derivada_prim;
             printf(" f’(x) = %s\n", evaluator_get_string(matriz_jacobiana[j]));
         }
     }
@@ -93,7 +93,7 @@ void gerar_matriz_jacobiana(void **matriz_jacobiana, char *expressao, int n_vari
     //free(nomes_variaveis);
 }
 
-double norma(char *expressao, double *aproximacao_inicial)
+double norma_funcao(char *expressao, double *aproximacao_inicial)
 {
     void *funcao;
     int contador; /* Numero de variaveis na função*/
@@ -117,7 +117,7 @@ double norma(char *expressao, double *aproximacao_inicial)
     printf("Aproximação inicial = %lf\n", aproximacao_inicial[0]);
     printf("NORMA DA FUNÇÃO: %lf \n", evaluator_evaluate(funcao, contador, nomes_variaveis, aproximacao_inicial));
 
-    evaluator_destroy (funcao);
+    // evaluator_destroy (funcao);
     return norma;
 }
 
@@ -142,7 +142,7 @@ double norma(char *expressao, double *aproximacao_inicial)
 //     }
 // }
 
-uint calcula_expressao(void *expressao, double *aproximacao_inicial)
+double calcula_expressao(void *expressao, double *aproximacao_inicial)
 {
     int contador; /* Numero de variaveis na função*/
     char **nomes_variaveis;
@@ -154,7 +154,7 @@ uint calcula_expressao(void *expressao, double *aproximacao_inicial)
     printf("Contador = %d\n", contador);
     printf("Nomes Variaveis = %s\n", nomes_variaveis[0]);
     printf("Aproximação inicial = %lf\n", aproximacao_inicial[0]);
-    uint resultado = evaluator_evaluate(funcao, contador, nomes_variaveis, aproximacao_inicial);
+    double resultado = evaluator_evaluate(funcao, contador, nomes_variaveis, aproximacao_inicial);
     //uint resultado = 2;
 
     return resultado;
@@ -197,3 +197,54 @@ double **calcular_matriz_jacobiana(void **matriz_jacobiana, double **matriz_jaco
 //      printf("Nomes Variaveis = %s\n", nomes_variaveis[0]);
 
 // }
+
+void calcula_delta(double **matriz_jacobiana_calc, double **delta, char *expressao, double *aproximacao_inicial, int n_variaveis){
+    int i,j;
+
+    printf("\n ------------ CALCULANDO O DELTA-----------\n");
+    for (i=0;i < 1; i++)
+        for (j=0; j < n_variaveis; j++){
+            double valor = calcula_expressao(expressao, aproximacao_inicial);
+            printf("VALOR = %lf \n", valor);
+            printf("MATRIZ_JACOBIANA_CALC: %lf \n", matriz_jacobiana_calc[i][j]);
+            delta[j][i] =  ( -1* valor ) / matriz_jacobiana_calc[i][j];
+            printf("DELTA = %lf\n", delta[j][i]);
+        }
+
+     printf("\n ------------ FIM DELTA----------\n");
+    
+}
+
+void proxima_aproximacao(double *aproximacao_inicial, double **delta, int n_variaveis)
+{
+    int i,j;
+
+    printf("\n ------------ PROXIMA APROXIMAÇÃO-----------\n");
+    for (i=0; i < 1; i++)
+        for (j=0; j< n_variaveis; j++){
+            printf("aproximação inicial = %lf\n", aproximacao_inicial[j]);
+            printf("delta = %lf\n", delta[j][i]);
+            aproximacao_inicial[j] = aproximacao_inicial[j] + delta[j][i];
+            printf("NOVA aproximação inicial = %lf\n", aproximacao_inicial[j]);
+        }
+}
+
+
+double norma_delta(double **delta, int n_variaveis){
+
+    double max;
+    int i, j;
+     printf("\n ------------ NORMA DELTA-----------\n");
+    max = delta[0][0]; 
+    for (i=0; i < n_variaveis; i++)
+        for (j=1; j < 1; j++){
+            if (delta[i][j] > max)
+                max = delta[i][j];
+        }
+
+    if (max < 0)
+        max = -1*max;
+    
+    printf("NORMA DELTA: %lf\n", max);
+    return max;
+}

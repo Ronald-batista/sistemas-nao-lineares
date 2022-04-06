@@ -3,67 +3,49 @@
 #include <matheval.h>
 #include "mylib.h"
 
-int main (){
-    int n_variaveis, max_iteracoes;
-    double  aproximacao_inicial, epsilon;
-    char expressao[50];
-    printf("Digite o numero de variaveis que função possui: \n");
-    scanf("%d", &n_variaveis);
+int main()
+{
+    int n_variaveis, max_iteracoes, i;
+    double epsilon = 0.0000001;
+    char string[] = "9*x1-4*log(x1-7)";
+    char *expressao = string;
+    double *resultado;
+    double *aproximacao_inicial;
+    aproximacao_inicial = malloc(1 * sizeof(double *));
+    aproximacao_inicial[0] =7.01;
+    max_iteracoes = 20;
+    n_variaveis = 1;
 
-    printf("Digite a Expressão da função (não utilize espaços): \n");
-    scanf("%s", expressao);
+    // printf("Digite o numero de variaveis que função possui: \n");
+    // scanf("%d", &n_variaveis);
 
-    printf("Digite a aproximação inicial: \n");
-    scanf("%lf", &aproximacao_inicial);
+    // aproximacao_inicial = malloc(n_variaveis * sizeof(double *));
+    // // aproximacao_inicial = malloc(n_variaveis * sizeof(double *));
+    // printf("Digite a aproximação inicial: \n");
+    // for (i = 0; i < n_variaveis; i++)
+    //     scanf("%lf", &aproximacao_inicial[i]);
 
-    printf("Digite a tolerancia (EPSILON) para o criterio de parada: \n");
-    scanf("%lf", &epsilon);
+    // printf("Digite a tolerancia (EPSILON) para o criterio de parada: \n");
+    // scanf("%lf", &epsilon);
 
-    printf("Digitea quantidade maxima de iterações permitidas: \n");
-    scanf("%d", &max_iteracoes);
+    // printf("Digite a quantidade maxima de iterações permitidas: \n");
+    // scanf("%d", &max_iteracoes);
 
-    printf("%d\n", n_variaveis);
-    printf("%s\n", expressao);  
-    printf("%lf\n", aproximacao_inicial);
-    printf("%lf\n", epsilon);
-    printf("%d\n", max_iteracoes);
+    printf("\nNuméro de variaveis: %d\n", n_variaveis);
+    printf("f(x) = %s\n", expressao);
+    for (i = 0; i < n_variaveis; i++)
+        printf("aproximação inicial: %1.14e\n", aproximacao_inicial[i]);
 
+    printf("Epsilon: %1.14e\n", epsilon);
+    printf("Max iterações: %d\n", max_iteracoes);
 
-    
-    //double resultado = newton();
+    resultado = newton(expressao, aproximacao_inicial, epsilon, max_iteracoes, n_variaveis);
+
+    printf("FINALIZANDO ----\n");
+    for (i = 0; i < n_variaveis; i++)
+        printf("Aproximacao_inicial[%d] = %lf", i, aproximacao_inicial[i]);
 
     return 0;
+
+    free(aproximacao_inicial);
 }
-
-
-double *newton (char const *expressao, double *aproximacao_inicial, double const epsilon, int const max_iteracoes, int const n_variaveis){
-    int i,linhas;
-    double *delta = malloc (n_variaveis *sizeof(double));
-
-    // calcular matriz jacobiana
-    void **matriz_jacobiana;
-    matriz_jacobiana =  malloc (linhas * sizeof(void*));
-    for(i=0; i < n_variaveis; i++){
-        matriz_jacobiana[i] = malloc(n_variaveis * sizeof(void));
-    }
-    
-    calcular_matriz_jacobiana(matriz_jacobiana, expressao, n_variaveis);
-
-    for (i=0; i < max_iteracoes;i++){
-        // Verifica criterio de parada - Norma da função na iteração atual é menor que o epsilon?
-        if (norma(expressao, aproximacao_inicial) < epsilon)
-            return aproximacao_inicial;
-        
-        //resolve o sistema linear para encontrar o delta. J(X^i)*DELTA^i = -F(X^i)
-        eliminacaoGauss(matriz_jacobiana, delta, calcula_expressao(expressao, aproximacao_inicial, i));
-
-        //proxima aproximação
-        proxima_aproximacao(aproximacao_inicial, delta);
-        
-        if (norma(delta, aproximacao_inicial) < epsilon){
-            return aproximacao_inicial;
-        }
-    }
-}
-
-
