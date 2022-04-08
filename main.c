@@ -9,14 +9,14 @@ int main()
 {
     int n_variaveis, max_iteracoes, i;
     double epsilon = 0.0000001;
-    char string[] = "6*x1-4*log(x1-2)-3*log(25-x1)";
+    char string[] = "7*x1-log(x1)";
     char *expressao = string;
     double *resultado;
     double *aproximacao_inicial;
     max_iteracoes = 20;
     n_variaveis = 1;
     aproximacao_inicial = malloc(n_variaveis * sizeof(double *));
-    aproximacao_inicial[0] = 3.0;
+    aproximacao_inicial[0] = 0.1;
 
     printf("\n------------- INICIANDO -------------\n");
 

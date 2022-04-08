@@ -75,6 +75,7 @@ void gerar_matriz_jacobiana(void **matriz_jacobiana, char *expressao, int n_vari
         for (j = 0; j < n_variaveis; j++)
         {
             funcao_derivada_prim = evaluator_derivative(funcao, nomes_variaveis[j]);
+            funcao_derivada_prim = evaluator_derivative(funcao_derivada_prim, nomes_variaveis[j]);
             matriz_jacobiana[j] = funcao_derivada_prim;
             // printf(" f’(x) = %s\n", evaluator_get_string(matriz_jacobiana[j]));
         }
@@ -84,7 +85,7 @@ void gerar_matriz_jacobiana(void **matriz_jacobiana, char *expressao, int n_vari
 
 double norma_funcao(char *expressao, double *aproximacao_inicial)
 {
-    void *funcao;
+    void *funcao, *funcao_deriv;
     int contador; /* Numero de variaveis na função*/
     char **nomes_variaveis;
     // printf("\n ------------ NORMA FUNCAO  ------------\n");
@@ -95,6 +96,7 @@ double norma_funcao(char *expressao, double *aproximacao_inicial)
     evaluator_get_variables(funcao, &nomes_variaveis, &contador);
     // printf("f(x) = %s\n", evaluator_get_string(funcao));
     //printf("aproximação inicial: %1.14e\n", aproximacao_inicial[0]);
+    funcao_deriv = evaluator_derivative(funcao,nomes_variaveis[0]);
 
     double norma = evaluator_evaluate(funcao, contador, nomes_variaveis, aproximacao_inicial);
     // printf("NORMA = %1.14e\n", norma );
