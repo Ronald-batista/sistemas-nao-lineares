@@ -8,7 +8,7 @@
 
 int main()
 {
-    int n_variaveis, max_iteracoes, i,j;
+    int n_variaveis, max_iteracoes, i, j;
     double epsilon = 0.0000001;
     char string[] = "-log(1-x1-x2)-log(x1)-log(x2)";
     char *expressao = string;
@@ -18,47 +18,58 @@ int main()
     n_variaveis = 2;
     aproximacao_inicial = malloc(n_variaveis * sizeof(double *));
     aproximacao_inicial[0] = 0.85;
-     aproximacao_inicial[1] = 0.05;
+    aproximacao_inicial[1] = 0.05;
 
+   // aloca matriz gradiente[n_variaveis][1]  ==> matriz coluna (matriz que possui apenas uma coluna e n linhas)
+    // void **gradiente;
+    // gradiente = malloc(n_variaveis * sizeof(void *));
+    // for (i = 0; i < n_variaveis; i++)
+    // {
+    //     gradiente[i] = malloc(1 * sizeof(void *));
+    // }
 
-    // aloca matriz gradiente[n_variaveis][1]  ==> matriz coluna (matriz que possui apenas uma coluna e n linhas)
-    void **gradiente;
-    gradiente = malloc(n_variaveis * sizeof(void *));
-    for (i = 0; i < n_variaveis; i++)
-    {
-        gradiente[i] = malloc(1 * sizeof(void *));
-    }
+    // // aloca matriz gradiente calculada ==> matriz coluna
+    // double *gradiente_calc;
+    // gradiente_calc = malloc(n_variaveis * sizeof(double));
 
-    // aloca matriz gradiente calculada ==> matriz coluna
-    double *gradiente_calc;
-    gradiente_calc = malloc(n_variaveis * sizeof(double));
+    // // aloca matriz hessiana[n_variaveis][n_variaveis]  ==> matriz quadrada
+    // void ***hessiana;
+    // hessiana = malloc(n_variaveis * sizeof(void *));
+    // for (i = 0; i < n_variaveis; i++)
+    // {
+    //     hessiana[i] = malloc(n_variaveis * sizeof(void *));
+    // }
 
-    // aloca matriz hessiana[n_variaveis][n_variaveis]  ==> matriz quadrada
-    void ***hessiana;
-    hessiana = malloc(n_variaveis * sizeof(void *));
-    for (i = 0; i < n_variaveis; i++)
-    {
-        hessiana[i] = malloc(n_variaveis * sizeof(void *));
-    }
+    // // aloca matriz hessiana calculada[n_variaveis][n_variaveis]  ==> calcula a matriz nos pontos de aproximação da iteração
+    // double **hessiana_calc;
+    // hessiana_calc = malloc(n_variaveis * sizeof(double));
+    // for (i = 0; i < n_variaveis; i++)
+    // {
+    //     hessiana_calc[i] = malloc(n_variaveis * sizeof(double));
+    // }
 
-     // aloca matriz hessiana calculada[n_variaveis][n_variaveis]  ==> calcula a matriz nos pontos de aproximação da iteração
-    double **hessiana_calc;
-    hessiana_calc = malloc(n_variaveis * sizeof(double ));
-    for (i = 0; i < n_variaveis; i++)
-    {
-        hessiana_calc[i] = malloc(n_variaveis * sizeof(double ));
-    }
+    // // aloca delta => matriz coluna
+    // double *delta;
+    // delta = malloc(n_variaveis * sizeof(double));
 
-    // aloca delta => matriz coluna
-    double *delta;
-    delta = malloc(n_variaveis * sizeof(double));
-
-    gera_vetor_gradiente(gradiente, expressao);
-    gera_matriz_hessiana(hessiana, gradiente, n_variaveis);
-    calcula_matriz_hessiana(hessiana, hessiana_calc, aproximacao_inicial, n_variaveis);
-    calcula_vetor_gradiente(gradiente, gradiente_calc, aproximacao_inicial);
-    //uint ipivo = encontraMax(hessiana_calc, n_variaveis, 0);
-    //trocaLinha(hessiana_calc, gradiente_calc,0,ipivo, n_variaveis );
-    eliminacaoGauss(hessiana_calc,gradiente_calc, n_variaveis );
-    retrossubs(hessiana_calc,gradiente_calc,delta,n_variaveis);
+    //  gera_vetor_gradiente(gradiente, expressao);
+    //  gera_matriz_hessiana(hessiana, gradiente, n_variaveis);
+    //  calcula_vetor_gradiente(gradiente,gradiente_calc, aproximacao_inicial, n_variaveis);
+//     calcula_matriz_hessiana(hessiana, hessiana_calc, aproximacao_inicial, n_variaveis);
+//     norma_gradiente(gradiente, gradiente_calc, aproximacao_inicial,n_variaveis);
+   
+    // calcula_delta(hessiana, hessiana_calc, gradiente, gradiente_calc, delta, aproximacao_inicial, n_variaveis);
+    // for(i=0; i< n_variaveis; i++)
+    //     printf("delta [%d] = %lf", i, delta[i]);
+    // printf("\n");
+    // proxima_aproximacao(delta,aproximacao_inicial,n_variaveis);
+    // uint ipivo = encontraMax(hessiana_calc, n_variaveis, 0);
+    // trocaLinha(hessiana_calc, gradiente_calc,0,ipivo, n_variaveis );
+    // eliminacaoGauss(hessiana_calc,gradiente_calc, n_variaveis );
+    // retrossubs(hessiana_calc,gradiente_calc,delta,n_variaveis);
+    double *newtin;
+    newtin = newton(expressao, aproximacao_inicial, epsilon, max_iteracoes, n_variaveis);
+   
+    for (i=0; i< n_variaveis; i++)
+         printf("\n\nNEWTINNN  = %lf\n", newtin[i]);
 }
