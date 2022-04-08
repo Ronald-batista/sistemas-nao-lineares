@@ -37,6 +37,14 @@ int main()
         hessiana[i] = malloc(n_variaveis * sizeof(void *));
     }
 
+     // aloca matriz hessiana calculada[n_variaveis][n_variaveis]  ==> calcula a matriz nos pontos de aproximação da iteração
+    double **hessiana_calc;
+    hessiana_calc = malloc(n_variaveis * sizeof(double ));
+    for (i = 0; i < n_variaveis; i++)
+    {
+        hessiana_calc[i] = malloc(n_variaveis * sizeof(double ));
+    }
+
     // aloca delta => matriz coluna
     double **delta;
     delta = malloc(n_variaveis * sizeof(double));
@@ -48,6 +56,6 @@ int main()
 
     vetor_gradiente(gradiente, expressao);
     gera_matriz_hessiana(hessiana, gradiente, n_variaveis);
-    
+    calcula_matriz_hessiana(hessiana, hessiana_calc, aproximacao_inicial, n_variaveis);
 
 }
