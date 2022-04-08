@@ -98,7 +98,7 @@ double norma_funcao(char *expressao, double *aproximacao_inicial)
     //printf("aproximação inicial: %1.14e\n", aproximacao_inicial[0]);
     funcao_deriv = evaluator_derivative(funcao,nomes_variaveis[0]);
 
-    double norma = evaluator_evaluate(funcao, contador, nomes_variaveis, aproximacao_inicial);
+    double norma = evaluator_evaluate(funcao_deriv, contador, nomes_variaveis, aproximacao_inicial);
     // printf("NORMA = %1.14e\n", norma );
     if (norma < 0)
     { // mmodulo do resultado se necessario
@@ -196,7 +196,7 @@ void calcula_delta(double **matriz_jacobiana_calc, double **delta, void *express
             }
             // printf("VALOR = %1.14e  \n", valor);
             // printf("MATRIZ_JACOBIANA_CALC: %lf \n", matriz_jacobiana_calc[i][j]);
-            delta[j][i] = (-1 * valor) / matriz_jacobiana_calc[i][j];
+            delta[j][i] = '(-1 * valor)' / matriz_jacobiana_calc[i][j];
             //  printf("DELTA = %1.14e \n", delta[j][i]);
         }
     *tempo_sistemas_lineares = timestamp() - *tempo_sistemas_lineares;
@@ -311,7 +311,7 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
         }
 
         printf("%1.14e\t|\t\t\n", norma_f);
-        if (norma_f < epsilon)
+        if (norma_f < 10.0)
         {
             tempo = timestamp();
             printf("\nTEMPO TOTAL: %1.14e\n", tempo);
