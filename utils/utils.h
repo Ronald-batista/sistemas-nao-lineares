@@ -14,6 +14,7 @@ typedef char * string_t;
 #define ALIGN_32 __attribute__((aligned(32)))
 #define ALIGN_16 __attribute__((aligned(16)))
 
+
 double timestamp(void)
 {
   struct timespec tp;

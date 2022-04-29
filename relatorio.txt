@@ -1,0 +1,5 @@
+Modificação 1:
+    ler o arquivo de funcoes inteiro atravez da entrada padrão
+Modificação 2:
+    A função que apresenta os minimos não precisa fazer a norma
+    

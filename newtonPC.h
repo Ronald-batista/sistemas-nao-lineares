@@ -6,19 +6,6 @@
 #include "utils/utils.h"
 
 /*
-Imprime uma matriz coluna que seja do tipo void
-*/
-void imprime_matriz_coluna_void(void **matriz, int linhas, int colunas)
-{
-    int i, j;
-    printf("IMPRIME VETOR GRADIENTE");
-    for (i = 0; i < linhas; i++)
-        for (j = 0; j < colunas; j++)
-            printf("\n%s\t| ", evaluator_get_string(matriz[i]));
-    printf("\n");
-}
-
-/*
 Cria vetor gradiente => matriz coluna com a derivada primeira da função em relação a cada icognita
 */
 void gera_vetor_gradiente(void **gradiente, void *expressao, double *tempo_derivadas)
@@ -34,14 +21,15 @@ void gera_vetor_gradiente(void **gradiente, void *expressao, double *tempo_deriv
 
     tempo = timestamp();
     for (i = 0; i < contador; i++)
+    {
         for (j = 0; j < 1; j++)
         {
             gradiente[i] = evaluator_derivative(funcao, icognitas[i]);
         }
-    tempo = timestamp() - tempo;
+    }
+    tempo = timestamp() - tempo; // tempo gasto para o calculo das derivadas
     *tempo_derivadas = tempo + *tempo_derivadas;
-    imprime_matriz_coluna_void(gradiente, contador, 1);
-}
+    }
 
 /*
 Gera uma matriz Hessiana NxN => contem a derivada segunda de cada elemento do vetor gradiente em relação a cada icognita da função
@@ -53,24 +41,18 @@ void gera_matriz_hessiana(void ***hessiana, void **gradiente, int n_variaveis, d
     char **icognitas;
     int contador;
     double tempo;
-    // printf("-----------GERARANDO MATRIZ HESSIANA-----------\n");
+
     tempo = timestamp();
     for (i = 0; i < n_variaveis; i++)
+    {
         for (j = 0; j < n_variaveis; j++)
         {
             evaluator_get_variables(gradiente[i], &icognitas, &contador);
-            // funcao = evaluator_derivative(gradiente[i], icognitas[j]);
-            //  printf("iteração i = %d |  f(x) = %s\n", i, evaluator_get_string(funcao));
             hessiana[i][j] = evaluator_derivative(gradiente[i], icognitas[j]);
         }
-    tempo = timestamp() - tempo;
+    }
+    tempo = timestamp() - tempo; // tempo gasto para o calculo das derivadas
     *tempo_derivadas = *tempo_derivadas + tempo;
-    // printar matriz hessiana
-    // for (i = 0; i < n_variaveis; i++)
-    //     for (j = 0; j < n_variaveis; j++)
-    //         printf("%s\t| ", evaluator_get_string(hessiana[i][j]));
-    // printf("\n");
-    // printf("-----------MATRIZ HESSIANA GERADA COM SUCESSO-----------\n");
 }
 
 void calcula_matriz_hessiana(void ***matriz_hessiana, double **matriz_hessiana_calc, double *aproximacao_inicial, int n_variaveis)
@@ -79,7 +61,6 @@ void calcula_matriz_hessiana(void ***matriz_hessiana, double **matriz_hessiana_c
     int contador; /* Numero de variaveis na função*/
     char **nomes_variaveis;
 
-    // printf("-----------CALCULANDO MATRIZ HESSIANA-----------\n");
     for (i = 0; i < n_variaveis; i++)
     {
         for (j = 0; j < n_variaveis; j++)
@@ -89,18 +70,13 @@ void calcula_matriz_hessiana(void ***matriz_hessiana, double **matriz_hessiana_c
 
             // calcula
             matriz_hessiana_calc[i][j] = evaluator_evaluate(matriz_hessiana[i][j], contador, nomes_variaveis, aproximacao_inicial);
+        
         }
     }
-    // printar matriz hessiana
-    // for (i = 0; i < n_variaveis; i++)
-    // {
-    //     for (j = 0; j < n_variaveis; j++)
-    //         printf("%lf\t| ", matriz_hessiana_calc[i][j]);
-    //     printf("\n");
-    // }
-
-    // printf("\n-----------MATRIZ HESSIANA CALCULADA COM SUCESSO-----------\n");
 }
+
+/* calcula o vetor gradiente nos pontos de aproximação da iteração
+ */
 
 void calcula_vetor_gradiente(void **gradiente, double *gradiente_calc, double *aproximacao_inicial, int n_variaveis)
 {
@@ -112,21 +88,9 @@ void calcula_vetor_gradiente(void **gradiente, double *gradiente_calc, double *a
     for (i = 0; i < n_variaveis; i++)
         for (j = 0; j < 1; j++)
         {
-
-            // funcao = evaluator_create(gradiente[i]);
-            // printf("F'(x) = %s\n", evaluator_get_string(gradiente[i]));
-            // printf("aproximação inicial: %lf\n", aproximacao_inicial[0]);
             evaluator_get_variables(gradiente[i], &icognitas, &contador);
             gradiente_calc[i] = evaluator_evaluate(gradiente[i], contador, icognitas, aproximacao_inicial);
-            // printf("\ngradiente_cal = %1.14e\n", gradiente_calc[i]);
         }
-
-    // imprime matriz gradiente calculada
-    // printf("\n-----------IMPRIME VETOR GRADIENTE CALCULADO-----------");
-    // for (i = 0; i < 1; i++)
-    //     for (j = 0; j < 1; j++)
-    //         printf("\n%lf\t| ", gradiente_calc[i]);
-    // printf("\n");
 }
 
 /*  Encontra o elemento de maior valor de uma matriz na linha i e retorna a sua posição
@@ -137,12 +101,10 @@ uint encontraMax(double **matriz, int linha, int coluna)
     uint indice_pivo = 0;
     double modulo;
     int i, j;
-    // printf("\n-----------ENCONTRA MAX-----------\n");
     for (i = 0; i < linha; i++)
     {
         for (j = coluna; j < coluna + 1; j++)
         {
-            // printf("ELEMENTO = %lf\n", matriz[i][j]);
             if (matriz[i][j] < 0)
                 modulo = matriz[i][j] * (-1);
             else
@@ -155,18 +117,17 @@ uint encontraMax(double **matriz, int linha, int coluna)
             }
         }
     }
-    // printf("INDICE PIVO = %d\n", indice_pivo);
     return indice_pivo;
 }
 
-/*troca a linha i da matriz, pela linha ipivo. Ocorre a mesma troca no vetor dos elementos independentes.
+/*  troca a linha i da matriz, pela linha ipivo. Ocorre a mesma troca no vetor dos elementos independentes.
  */
 void trocaLinha(double **matriz, double *vetor_independente, int i, uint ipivo, int max_col)
 {
     double **matriz_temporaria;
     int linha, coluna;
     double temp;
-    // printf("-----------TROCA LINHAS-----------\n");
+
     // troca linhas matriz
     for (linha = i; linha < i + 1; linha++)
     {
@@ -182,21 +143,9 @@ void trocaLinha(double **matriz, double *vetor_independente, int i, uint ipivo, 
     temp = vetor_independente[i];
     vetor_independente[i] = vetor_independente[ipivo];
     vetor_independente[ipivo] = temp;
-
-    // imprime matriz
-
-    // for (linha = 0; linha < max_col; linha++)
-    // {
-    //     for (coluna = 0; coluna < max_col; coluna++)
-    //     {
-    //         printf("%lf\t| ", matriz[linha][coluna]);
-    //     }
-    //     printf(" %lf", vetor_independente[linha]);
-    //     printf("\n");
-    // }
 }
 
-/* Seja um S.L. de ordem 'n'
+/* Seja um S.L. de ordem 'n' realiza a eliminação de gauss na matriz com os termos independentes
  */
 void eliminacaoGauss(double **matriz, double *vetor_independente, uint n)
 {
@@ -215,18 +164,6 @@ void eliminacaoGauss(double **matriz, double *vetor_independente, uint n)
                 matriz[k][j] -= matriz[i][j] * m;
             vetor_independente[k] -= vetor_independente[i] * m;
         }
-    }
-
-    // imprime matriz
-    // printf("\n-----------ELIMINAÇÂO DE GAUSS-----------\n");
-    for (i = 0; i < n; i++)
-    {
-        for (j = 0; j < n; j++)
-        {
-            // printf("%lf\t| ", matriz[i][j]);
-        }
-        //  printf(" %lf", vetor_independente[i]);
-        // printf("\n");
     }
 }
 
@@ -251,10 +188,6 @@ void retrossubs(double **matriz, double *vetor_independente, double *delta, uint
             delta[i] -= matriz[i][j] * delta[j];
         delta[i] /= matriz[i][i];
     }
-
-    // imprime o vetor delta
-    // for (i = 0; i < n; i++)
-    //     printf("|\t%lf\t|\n", delta[i]);
 }
 
 /* Calcula a norma do vetor gradientes nos pontos x^i
@@ -264,7 +197,8 @@ double norma_grad(void **gradiente, double *gradiente_calc, double *aproximacao_
     int i;
     double norma, temp;
     calcula_vetor_gradiente(gradiente, gradiente_calc, aproximacao_inicial, n_variaveis);
-    // encontra a norma do gradiente_calc
+
+    // encontra a norma do vetor gradiente_calc
     norma = gradiente_calc[0];
     for (i = 0; i < n_variaveis; i++)
     {
@@ -276,28 +210,26 @@ double norma_grad(void **gradiente, double *gradiente_calc, double *aproximacao_
         if (temp > norma)
             norma = temp;
     }
-    // printf("---------------------------------->> NORMA GRADIENTE = %1.14e", norma);
     return norma;
 }
 
 /* Calcula a norma de f(x) nos pontos x^i
  */
-double norma_funcao_apresentacao(void *expressao, double *aproximacao_inicial, int n_variaveis)
+double funcao_apresentacao(void *expressao, double *aproximacao_inicial, int n_variaveis)
 {
     int i;
-    double norma, temp;
+    double valor, temp;
     char **icognitas;
     int contador;
     void *f;
     // encontra a norma do gradiente_calc
-    f  = evaluator_create(expressao);
+    f = evaluator_create(expressao);
     evaluator_get_variables(f, &icognitas, &contador);
-    norma = evaluator_evaluate(f, contador, icognitas,aproximacao_inicial);
-    if (norma < 0){
-        norma = norma *(-1);
-    }
-    // printf("---------------------------------->> NORMA GRADIENTE = %1.14e", norma);
-    return norma;
+    valor = evaluator_evaluate(f, contador, icognitas, aproximacao_inicial);
+    if (valor > 0 || valor < 0)
+        return valor;
+    else
+        return 1.00000000000000;
 }
 
 /* Calcula o delta ==> resolve o sistema linear H(X^(i))𝚫^(i) = -𝛻f (X^(i))
@@ -315,10 +247,13 @@ void calcula_delta(void ***hessiana, double **hessiana_calc, void **gradiente, d
         gradiente_calc[i] = gradiente_calc[i] * (-1);
         // printf("gradiente_calc = %lf\n", gradiente_calc[i]);
     }
+
     tempo = timestamp();
+
     eliminacaoGauss(hessiana_calc, gradiente_calc, n_variaveis);
     retrossubs(hessiana_calc, gradiente_calc, delta, n_variaveis);
-    tempo = timestamp() - tempo;
+
+    tempo = timestamp() - tempo; // tempo para resolução do sistema linear (eliminação de gauss + retrosubstituição)
     *tempo_sistemas_lineares = *tempo_sistemas_lineares + tempo;
 }
 
@@ -333,6 +268,8 @@ void proxima_aproximacao(double *delta, double *aproximacao_inicial, int n_varia
     }
 }
 
+/*  Encontra a norma do vetor delta
+ */
 double norma_delta(double *delta, int n_variaveis)
 {
     int i;
@@ -349,10 +286,8 @@ double norma_delta(double *delta, int n_variaveis)
     return norma;
 }
 
-
-
 /* Imprime o valor minimo de um vetor double
-*/
+ */
 void minimo_global(double *norma_funcao, int max_iteracoes)
 {
     double min;
@@ -362,22 +297,21 @@ void minimo_global(double *norma_funcao, int max_iteracoes)
     {
         if (norma_funcao[i] == 0.0)
         {
-            printf("MINIMO GLOBAL APROXIMADO = %1.14e\n", min);
+            printf("MINIMO GLOBAL = %1.14e\n", min);
             break;
         }
-            if (min > norma_funcao[i])
-            {
-                min = norma_funcao[i];
-            }
-            if (i == max_iteracoes - 1)
-                printf("MINIMO GLOBAL APROXIMADO = %1.14e\n", min);
-      
+        if (min > norma_funcao[i])
+        {
+            min = norma_funcao[i];
+        }
+        if (i == max_iteracoes - 1)
+            printf("MINIMO GLOBAL= %1.14e\n", min);
     }
 }
 
 /* Minimização de funções convexas utilzando o método de newton
  */
-double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int max_iteracoes, int n_variaveis, double *norma_funcao)
+double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int max_iteracoes, int n_variaveis, double *value_funcao)
 {
     int i;
     double tempo, tempo_derivadas, tempo_sistemas_lineares;
@@ -417,7 +351,7 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
     double *delta;
     delta = malloc(n_variaveis * sizeof(double));
 
-    // 
+    //
     double *norma_gradiente_calc;
     norma_gradiente_calc = malloc(max_iteracoes * sizeof(double));
 
@@ -429,16 +363,26 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
     for (i = 0; i < max_iteracoes; i++)
     {
         printf(" %d\t\t| ", i);
-        norma_funcao[i] = norma_funcao_apresentacao(expressao,aproximacao_inicial, n_variaveis );
-
-        norma_gradiente_calc[i] = norma_grad(gradiente, gradiente_calc, aproximacao_inicial, n_variaveis);
-        printf("%1.14e\t|\t\t\n", norma_funcao[i]);
-
-        if (norma_gradiente_calc[i] < epsilon)  
+        value_funcao[i] = funcao_apresentacao(expressao, aproximacao_inicial, n_variaveis);
+        if (value_funcao[i] == 1.00000000000000)
         {
             tempo = timestamp();
-            printf("\nTEMPO TOTAL: %1.14e\n", tempo);
-            printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);   
+            printf("\nMinimo Global: %1.14e\n", value_funcao[i-1]);
+            printf("TEMPO TOTAL: %1.14e\n", tempo);
+            printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);
+            printf("TEMPO SISTEMAS LINEARES: %1.14e\n", tempo_sistemas_lineares);
+            return aproximacao_inicial;
+        }
+
+        norma_gradiente_calc[i] = norma_grad(gradiente, gradiente_calc, aproximacao_inicial, n_variaveis);
+        printf("%1.14e\t|\t\t\n", value_funcao[i]);
+
+        if (norma_gradiente_calc[i] < epsilon)
+        {
+            tempo = timestamp();
+            printf("\nMinimo Global: %1.14e\n", value_funcao[i]);
+            printf("TEMPO TOTAL: %1.14e\n", tempo);
+            printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);
             printf("TEMPO SISTEMAS LINEARES: %1.14e\n", tempo_sistemas_lineares);
             return aproximacao_inicial;
         }
@@ -449,7 +393,8 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
         if (norma_delta(delta, n_variaveis) < epsilon)
         {
             tempo = timestamp();
-            printf("\nTEMPO TOTAL: %1.14e\n", tempo);
+            printf("\nMinimo Global: %1.14e\n", value_funcao[i]);
+            printf("TEMPO TOTAL: %1.14e\n", tempo);
             printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);
             printf("TEMPO SISTEMAS LINEARES: %1.14e\n", tempo_sistemas_lineares);
             return aproximacao_inicial;
@@ -457,11 +402,11 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
     };
 
     tempo = timestamp();
-    printf("\nTEMPO TOTAL: %1.14e\n", tempo);
+    printf("\nMinimo Global: %1.14e\n", value_funcao[i]);
+    printf("TEMPO TOTAL: %1.14e\n", tempo);
     printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);
     printf("TEMPO SISTEMAS LINEARES: %1.14e\n", tempo_sistemas_lineares);
     return aproximacao_inicial;
-
 
     // libera a memória da hessiana
     for (i = 0; i < 1; i++)

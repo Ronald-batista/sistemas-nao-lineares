@@ -1,8 +1,7 @@
- gcc main.c -o main -lmatheval
+all: newtonPC
 
+newtonPC:	
+	gcc newtonPC.c -I/usr/local/include -L/usr/local/lib -lmatheval -o newtonPC
 
- cc testes.c -I/usr/local/include -L/usr/local/lib -lmatheval -o teste
-
-
-
- gcc novo.c -I/usr/local/include -L/usr/local/lib -lmatheval -o novo
+clean:
+	rm newtonPC
