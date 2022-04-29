@@ -1,39 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "Rosenbrock.c"
+#include <matheval.h>
+#include <assert.h>
+#include "utils/utils.h"
 
 int main()
 {
-    double *aproximacao_inicial;
-    int n_variaveis = 2;
-    aproximacao_inicial = malloc(n_variaveis * sizeof(double *));
-    aproximacao_inicial[0] = 1.0;
-    aproximacao_inicial[1] = 2.0;
-    for (int i = 0; i < n_variaveis; i++)
-    {
-        printf("%f\n", aproximacao_inicial[i]);
-    }
 
-    free(aproximacao_inicial);
+    double *X;
+    X = malloc(10 * sizeof(double *));
+    X[0] = 0.1;
+    
+    double fx = rosenbrock(X, 10);
+    printf("%lf\n", fx);
+    
 
-       for (int i = 0; i < n_variaveis; i++)
-    {
-        printf("%f\n", aproximacao_inicial[i]);
-    }
+    double fxdx = rosenbrock_dx(0, X, 10);
+
+    printf("%lf\n", fxdx);
+
+    X[0] = fxdx;
+    double fxdxdy = rosenbrock_dxdy(0, 1, X, 10);
+    printf("%lf\n", fxdxdy);
 
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

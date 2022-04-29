@@ -1,5 +1,30 @@
 Modificação 1:
     ler o arquivo de funcoes inteiro atravez da entrada padrão
+
 Modificação 2:
     A função que apresenta os minimos não precisa fazer a norma
+
+Modificação 3:
+    Quando não for possivel calcular uma função parar o programa.
+
+Modificação 4:
+    Incluindo rosenbrock: alteração na função "calcula_vetor_gradiente" para calcular a derivada primeira agora utilizando a função "rosenbrock_dx"
+
+Modificação 5:
+    Incluindo rosenbrock: alteração na funcao "calcula_matriz_hessiana" para calcular a derivda segunda agora utilizando a função "rosenbrock_dxdy"
+
+Modificação 6:
+    Incluindo rosenbrock: alteração na funcao "funcao_apresentacao" para calcular f(x) agora utilizando a função "rosenbrock"
+
+Modificação 7:
+    Função "gera_vetor_gradiente" removida por não ter mais utilidade.
+
+Modificação 8:
+    Função "gera_matriz_hessiana" removida por não ter mais utilidade.
+
+Modificação 9: 
+    Removido a variavel "gradiente" pois não é mais necessario uma matriz com as expressoes das derivadas.
+
+Modificação 10: 
+    Removido a variavel "matriz_hessiana" pois não é mais necessario uma matriz com as expressoes das derivadas.
     

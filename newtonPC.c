@@ -4,16 +4,17 @@
 #include <string.h>
 #include <assert.h>
 #include "utils/utils.h"
-#include "newtonPC.h"
+#include "newton.c"
 #include <sys/stat.h>
+#include "Rosenbrock.c"
 
 int main()
 {
     int n_variaveis, max_iteracoes, i, j;
     double epsilon;
 
-    char expressao[1000];
-    char buf[1000];
+    char expressao[1000000];
+    char buf[1000000];
     double *aproximacao_inicial;
     double *value_funcao;
     double *final;
@@ -75,8 +76,8 @@ int main()
 
             free(aproximacao_inicial);
             free(value_funcao);
-            memset(buf, 0, 1000);
-            memset(expressao, 0, 1000);
+            memset(buf, 0, 1000000);
+            memset(expressao, 0, 1000000);
         }
         else
         {
