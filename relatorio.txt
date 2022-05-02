@@ -27,4 +27,6 @@ Modificação 9:
 
 Modificação 10: 
     Removido a variavel "matriz_hessiana" pois não é mais necessario uma matriz com as expressoes das derivadas.
-    
+
+
+

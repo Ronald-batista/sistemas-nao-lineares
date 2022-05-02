@@ -6,7 +6,7 @@
 #include "utils/utils.h"
 #include "newton.c"
 #include <sys/stat.h>
-#include "Rosenbrock.c"
+#include "utils/Rosenbrock.c"
 
 int main()
 {

@@ -4,10 +4,11 @@
 #include <string.h>
 #include <assert.h>
 #include "utils/utils.h"
-#include "Rosenbrock.c"
+#include "utils/Rosenbrock.c"
 
 #define DIMENSAO 10
 
+/* calcula a matriz hessiana nos pontos de aproximação da iteração */
 void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas)
 {
     int i, j;
@@ -25,7 +26,6 @@ void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_
 
 /* calcula o vetor gradiente nos pontos de aproximação da iteração
  */
-
 void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas)
 {
     int i;
@@ -105,7 +105,19 @@ void eliminacaoGauss(double **matriz, double *vetor_independente, uint n)
             double m = matriz[k][i] / matriz[i][i];
             matriz[k][i] = 0.0;
             for (int j = i + 1; j < n; ++j)
+            {
                 matriz[k][j] -= matriz[i][j] * m;
+               // matriz[k][j + 1] -= matriz[i][j + 1] * m;
+            }
+            // // residuo
+            // for (int j = n % i ; j < n; j++)
+            // {
+            //     matriz[k][j] -= matriz[i][j] * m;
+            //     matriz[k][j + 1] -= matriz[i][j + 1] * m;
+            //     matriz[k][j + 2] -= matriz[i][j + 2] * m;
+            //     matriz[k][j + 3] -= matriz[i][j + 3] * m;
+            // }
+
             vetor_independente[k] -= vetor_independente[i] * m;
         }
     }
@@ -134,7 +146,7 @@ void retrossubs(double **matriz, double *vetor_independente, double *delta, uint
     }
 }
 
-/* Calcula a norma do vetor gradientes nos pontos x^i
+/* Calcula a norma do vetor gradiente nos pontos x^i
  */
 double norma_grad(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas)
 {
@@ -144,6 +156,7 @@ double norma_grad(double *gradiente_calc, double *aproximacao_inicial, int n_var
 
     // encontra a norma do vetor gradiente_calc
     norma = gradiente_calc[0];
+
     for (i = 0; i < n_variaveis; i++)
     {
         temp = gradiente_calc[i];
@@ -161,14 +174,13 @@ double norma_grad(double *gradiente_calc, double *aproximacao_inicial, int n_var
  */
 double funcao_apresentacao(void *expressao, double *aproximacao_inicial, int n_variaveis)
 {
-    int i;
     double valor;
 
     valor = rosenbrock(aproximacao_inicial, DIMENSAO);
-    if (valor > 0 || valor < 0)
+    if (valor > 0 || valor < 0) // verifica se é um numero válido
         return valor;
     else
-        return 1.00000000000000;
+        return 1.00000000000000; // condicao em que a funcao de rosenbrock não pôde ser calculada
 }
 
 /* Calcula o delta ==> resolve o sistema linear H(X^(i))𝚫^(i) = -𝛻f (X^(i))
@@ -226,26 +238,26 @@ double norma_delta(double *delta, int n_variaveis)
 
 /* Imprime o valor minimo de um vetor double
  */
-void minimo_global(double *norma_funcao, int max_iteracoes)
-{
-    double min;
-    int i;
-    min = norma_funcao[0];
-    for (i = 0; i < max_iteracoes; i++)
-    {
-        if (norma_funcao[i] == 0.0)
-        {
-            printf("MINIMO GLOBAL = %1.14e\n", min);
-            break;
-        }
-        if (min > norma_funcao[i])
-        {
-            min = norma_funcao[i];
-        }
-        if (i == max_iteracoes - 1)
-            printf("MINIMO GLOBAL= %1.14e\n", min);
-    }
-}
+// void minimo_global(double *norma_funcao, int max_iteracoes)
+// {
+//     double min;
+//     int i;
+//     min = norma_funcao[0];
+//     for (i = 0; i < max_iteracoes; i++)
+//     {
+//         if (norma_funcao[i] == 0.0)
+//         {
+//             printf("MINIMO GLOBAL = %1.14e\n", min);
+//             break;
+//         }
+//         if (min > norma_funcao[i])
+//         {
+//             min = norma_funcao[i];
+//         }
+//         if (i == max_iteracoes - 1)
+//             printf("MINIMO GLOBAL= %1.14e\n", min);
+//     }
+// }
 
 /* Minimização de funções convexas utilzando o método de newton
  */
@@ -259,23 +271,23 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
 
     // aloca matriz gradiente calculada ==> matriz coluna
     double *gradiente_calc;
-    gradiente_calc = malloc(n_variaveis * sizeof(double));
+    gradiente_calc = (double *)malloc(n_variaveis * sizeof(double));
 
     // aloca matriz hessiana calculada[n_variaveis][n_variaveis]  ==> calcula a matriz nos pontos de aproximação da iteração
     double **hessiana_calc;
-    hessiana_calc = malloc(n_variaveis * sizeof(double));
+    hessiana_calc = (double **)malloc(n_variaveis * sizeof(double *));
     for (i = 0; i < n_variaveis; i++)
     {
-        hessiana_calc[i] = malloc(n_variaveis * sizeof(double));
+        hessiana_calc[i] = (double *)malloc(n_variaveis * sizeof(double));
     }
 
     // aloca delta => matriz coluna
     double *delta;
-    delta = malloc(n_variaveis * sizeof(double));
+    delta = (double *)malloc(n_variaveis * sizeof(double));
 
     //
     double *norma_gradiente_calc;
-    norma_gradiente_calc = malloc(max_iteracoes * sizeof(double));
+    norma_gradiente_calc = (double *)malloc(max_iteracoes * sizeof(double));
 
     // gera_vetor_gradiente(gradiente, expressao, &tempo_derivadas);
     // gera_matriz_hessiana(hessiana, gradiente, n_variaveis, &tempo_derivadas);

@@ -1,41 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "Rosenbrock.c"
-#include <matheval.h>
-#include <assert.h>
 #include "utils/utils.h"
+#include <likwid.h>
 
 int main()
 {
 
+    LIKWID_MARKER_INIT;
+    LIKWID_MARKER_START("TESTE");
     double *X;
-    X = malloc(10 * sizeof(double *));
-    X[0] = 0.1;
-    
-    double fx = rosenbrock(X, 10);
-    printf("%lf\n", fx);
-    
+    X = (double *)malloc(10 * 10 * sizeof(double *));
+    X[0] = 1.0;
+    printf("%f\n", X[0]);
 
-    double fxdx = rosenbrock_dx(0, X, 10);
-
-    printf("%lf\n", fxdx);
-
-    X[0] = fxdx;
-    double fxdxdy = rosenbrock_dxdy(0, 1, X, 10);
-    printf("%lf\n", fxdxdy);
-
-
+    LIKWID_MARKER_STOP("TESTE");
+    LIKWID_MARKER_CLOSE;
     return 0;
 }
-
-
-
-
-
-
-
-
 
 // int i = 0;
 //     double *aproximacao_inicial;
