@@ -1,29 +1,39 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <matheval.h>
 #include <string.h>
-#include <assert.h>
 #include "utils/utils.h"
-#include "newton.c"
-#include <sys/stat.h>
-#include "utils/Rosenbrock.c"
 #include <likwid.h>
 
-int main()
-{
-    LIKWID_MARKER_INIT;
-    int n_variaveis, max_iteracoes, i, j;
-    double epsilon;
 
-    char expressao[1000000];
-    char buf[1000000];
+
+void testaLikwid(){
+
+    LIKWID_MARKER_INIT;
+    LIKWID_MARKER_START("TESTE");
+    double *X;
+    X = (double *)malloc(10 * 10 * sizeof(double *));
+    X[0] = 1.0;
+    printf("%f\n", X[0]);
+
+    LIKWID_MARKER_STOP("TESTE");
+    LIKWID_MARKER_CLOSE;
+   
+}
+
+
+
+
+void testaLeitura(){
+    int i = 0;
     double *aproximacao_inicial;
-    double *value_funcao;
-    double *resultado;
+    int n_variaveis, max_iteracoes, j;
+    double epsilon;
     int contador = 0;
     int marcador = 1;
     int iterador = 0;
 
+    char str[100];
+    char buf[1000];
     while (scanf("%s", buf) != EOF)
     {
         if (marcador == 1)
@@ -36,9 +46,9 @@ int main()
         }
         else if (marcador == 2)
         { // expressao
-            strcpy(expressao, buf);
+            strcpy(str, buf);
             marcador++;
-            printf("expressao: %s\n", expressao);
+            printf("expressao: %s\n", str);
         }
         else if ((marcador == 3) && (contador > 0))
         { // aproximacao inicial
@@ -67,19 +77,10 @@ int main()
             max_iteracoes = atoi(buf);
             marcador = 1;
             printf("max_iteracoes: %d\n", max_iteracoes);
-
-           
-            value_funcao = malloc(max_iteracoes * sizeof(double));
-            resultado = newton(expressao, aproximacao_inicial, epsilon, max_iteracoes, n_variaveis, value_funcao);
-            free(aproximacao_inicial);
-            free(value_funcao);
-            
-
             contador = 0;
             iterador = 0;
             printf("\n");
-            memset(buf, 0, 1000000);
-            memset(expressao, 0, 1000000);
+            free(aproximacao_inicial);
         }
         else
         {
@@ -87,6 +88,47 @@ int main()
             break;
         }
     }
-    LIKWID_MARKER_CLOSE;
-    return 0;
+
 }
+
+
+
+
+
+void testaAlocacaoContigua(){
+      double *matriz;
+    int n = 10;
+    matriz = (double *)malloc(n * n * sizeof(double));
+
+    //zerando a matriz
+    int i, j;
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            matriz[i * n + j] = 0;
+        }
+    }
+
+    //preenchendo a matriz
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            matriz[i * n + j] = i * n + j;
+        }
+    }
+    //imprimindo a matriz
+    for (i = 0; i < n; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+            printf("%f ", matriz[i * n + j]);
+        }
+        printf("\n");
+    }
+
+
+    free(matriz);
+}
+

@@ -3,23 +3,28 @@
 #include <matheval.h>
 #include <string.h>
 #include <assert.h>
-#include "utils/utils.h"
+#include "utils/utils.c"
 #include "utils/Rosenbrock.c"
+#include <likwid.h>
 
 #define DIMENSAO 10
 
 /* calcula a matriz hessiana nos pontos de aproximação da iteração */
-void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas)
+void calcula_matriz_hessiana(double *matriz_hessiana_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas)
 {
     int i, j;
     double tempo = timestamp();
+    string_t markername;
+    markername = markerName("Matriz_Hessiana:", DIMENSAO);
+    LIKWID_MARKER_START(markername);
     for (i = 0; i < n_variaveis; i++)
     {
         for (j = 0; j < n_variaveis; j++)
         {
-            matriz_hessiana_calc[i][j] = rosenbrock_dxdy(i, j, aproximacao_inicial, DIMENSAO);
+            matriz_hessiana_calc[i * n_variaveis + j] = rosenbrock_dxdy(i, j, aproximacao_inicial, DIMENSAO);
         }
     }
+    LIKWID_MARKER_STOP(markername);
     tempo = timestamp() - tempo; // tempo gasto para o calculo das derivadas
     *tempo_derivadas = *tempo_derivadas + tempo;
 }
@@ -28,10 +33,16 @@ void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_
  */
 void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas)
 {
+
     int i;
     double tempo = timestamp();
+
+    string_t markername;
+    markername = markerName("Vetor_Gradiente:", DIMENSAO);
+    LIKWID_MARKER_START(markername);
     for (i = 0; i < n_variaveis; i++)
         gradiente_calc[i] = rosenbrock_dx(i, aproximacao_inicial, DIMENSAO);
+    LIKWID_MARKER_STOP(markername);
 
     tempo = timestamp() - tempo; // tempo gasto para o calculo das derivadas
     *tempo_derivadas = *tempo_derivadas + tempo;
@@ -39,9 +50,9 @@ void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial
 
 /*  Encontra o elemento de maior valor de uma matriz na linha i e retorna a sua posição
  */
-uint encontraMax(double **matriz, int linha, int coluna)
+uint encontraMax(double *matriz, int linha, int coluna)
 {
-    double max = matriz[0][0];
+    double max = matriz[0];
     uint indice_pivo = 0;
     double modulo;
     int i, j;
@@ -49,10 +60,10 @@ uint encontraMax(double **matriz, int linha, int coluna)
     {
         for (j = coluna; j < coluna + 1; j++)
         {
-            if (matriz[i][j] < 0)
-                modulo = matriz[i][j] * (-1);
+            if (matriz[i * coluna + j] < 0)
+                modulo = matriz[i * coluna + j] * (-1);
             else
-                modulo = matriz[i][j];
+                modulo = matriz[i * coluna + j];
 
             if (modulo > max)
             {
@@ -66,9 +77,9 @@ uint encontraMax(double **matriz, int linha, int coluna)
 
 /*  troca a linha i da matriz, pela linha ipivo. Ocorre a mesma troca no vetor dos elementos independentes.
  */
-void trocaLinha(double **matriz, double *vetor_independente, int i, uint ipivo, int max_col)
+void trocaLinha(double *matriz, double *vetor_independente, int i, uint ipivo, int max_col)
 {
-    double **matriz_temporaria;
+    // double **matriz_temporaria;
     int linha, coluna;
     double temp;
 
@@ -77,9 +88,9 @@ void trocaLinha(double **matriz, double *vetor_independente, int i, uint ipivo, 
     {
         for (coluna = 0; coluna < max_col; coluna++)
         {
-            temp = matriz[linha][coluna];
-            matriz[linha][coluna] = matriz[ipivo][coluna];
-            matriz[ipivo][coluna] = temp;
+            temp = matriz[linha * max_col + coluna];                             // matriz[linha][coluna]
+            matriz[linha * max_col + coluna] = matriz[ipivo * max_col + coluna]; // matriz[ipivo*max_col+coluna]
+            matriz[ipivo * max_col + coluna] = temp;
         }
     }
 
@@ -91,9 +102,13 @@ void trocaLinha(double **matriz, double *vetor_independente, int i, uint ipivo, 
 
 /* Seja um S.L. de ordem 'n' realiza a eliminação de gauss na matriz com os termos independentes
  */
-void eliminacaoGauss(double **matriz, double *vetor_independente, uint n)
+void eliminacaoGauss(double *matriz, double *vetor_independente, uint n)
 {
     int i, j;
+
+    string_t markername;
+    markername = markerName("Resolucao_Sistema_Linear:", DIMENSAO);
+    LIKWID_MARKER_START(markername);
     /* para cada linha a partir da primeira */
     for (int i = 0; i < n; ++i)
     {
@@ -102,38 +117,30 @@ void eliminacaoGauss(double **matriz, double *vetor_independente, uint n)
             trocaLinha(matriz, vetor_independente, i, iPivo, n);
         for (int k = i + 1; k < n; ++k)
         {
-            double m = matriz[k][i] / matriz[i][i];
-            matriz[k][i] = 0.0;
+            double m = matriz[k * n] / matriz[i * n + i]; // m =  matriz[k][i] / matriz[i][i]
+            matriz[k * n] = 0.0;
             for (int j = i + 1; j < n; ++j)
             {
-                matriz[k][j] -= matriz[i][j] * m;
-               // matriz[k][j + 1] -= matriz[i][j + 1] * m;
+                matriz[k * n + j] -= matriz[i * n + j] * m; // matriz[k][j] -= matriz[i][j] * m;
             }
-            // // residuo
-            // for (int j = n % i ; j < n; j++)
-            // {
-            //     matriz[k][j] -= matriz[i][j] * m;
-            //     matriz[k][j + 1] -= matriz[i][j + 1] * m;
-            //     matriz[k][j + 2] -= matriz[i][j + 2] * m;
-            //     matriz[k][j + 3] -= matriz[i][j + 3] * m;
-            // }
 
             vetor_independente[k] -= vetor_independente[i] * m;
         }
     }
+    LIKWID_MARKER_STOP(markername);
 }
 
 /* Seja um S.L. triangula de orden n, encontra as suas raizes e armazena no vetor delta
 
  */
-void retrossubs(double **matriz, double *vetor_independente, double *delta, uint n)
+void retrossubs(double *matriz, double *vetor_independente, double *delta, uint n)
 {
     int i, j;
 
     //  caso base de só haver uma expressao
     if (n == 1)
     {
-        delta[0] = vetor_independente[0] / matriz[0][0];
+        delta[0] = vetor_independente[0] / matriz[0];
         return;
     }
 
@@ -141,8 +148,8 @@ void retrossubs(double **matriz, double *vetor_independente, double *delta, uint
     {
         delta[i] = vetor_independente[i];
         for (int j = i + 1; j < n; ++j)
-            delta[i] -= matriz[i][j] * delta[j];
-        delta[i] /= matriz[i][i];
+            delta[i] -= matriz[i * n + j] * delta[j];
+        delta[i] /= matriz[i * n + i];
     }
 }
 
@@ -185,7 +192,7 @@ double funcao_apresentacao(void *expressao, double *aproximacao_inicial, int n_v
 
 /* Calcula o delta ==> resolve o sistema linear H(X^(i))𝚫^(i) = -𝛻f (X^(i))
  */
-void calcula_delta(double **hessiana_calc, double *gradiente_calc, double *delta, double *aproximacao_inicial, int n_variaveis, double *tempo_sistemas_lineares, double *tempo_derivadas)
+void calcula_delta(double *hessiana_calc, double *gradiente_calc, double *delta, double *aproximacao_inicial, int n_variaveis, double *tempo_sistemas_lineares, double *tempo_derivadas)
 {
     int i;
     double tempo;
@@ -236,33 +243,13 @@ double norma_delta(double *delta, int n_variaveis)
     return norma;
 }
 
-/* Imprime o valor minimo de um vetor double
- */
-// void minimo_global(double *norma_funcao, int max_iteracoes)
-// {
-//     double min;
-//     int i;
-//     min = norma_funcao[0];
-//     for (i = 0; i < max_iteracoes; i++)
-//     {
-//         if (norma_funcao[i] == 0.0)
-//         {
-//             printf("MINIMO GLOBAL = %1.14e\n", min);
-//             break;
-//         }
-//         if (min > norma_funcao[i])
-//         {
-//             min = norma_funcao[i];
-//         }
-//         if (i == max_iteracoes - 1)
-//             printf("MINIMO GLOBAL= %1.14e\n", min);
-//     }
-// }
-
 /* Minimização de funções convexas utilzando o método de newton
  */
 double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int max_iteracoes, int n_variaveis, double *value_funcao)
 {
+    string_t markername;
+    markername = markerName("Metodo_Newton:", 10);
+    LIKWID_MARKER_START(markername);
     int i;
     double tempo, tempo_derivadas, tempo_sistemas_lineares;
     tempo = 0;
@@ -273,13 +260,10 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
     double *gradiente_calc;
     gradiente_calc = (double *)malloc(n_variaveis * sizeof(double));
 
-    // aloca matriz hessiana calculada[n_variaveis][n_variaveis]  ==> calcula a matriz nos pontos de aproximação da iteração
-    double **hessiana_calc;
-    hessiana_calc = (double **)malloc(n_variaveis * sizeof(double *));
-    for (i = 0; i < n_variaveis; i++)
-    {
-        hessiana_calc[i] = (double *)malloc(n_variaveis * sizeof(double));
-    }
+    // aloca matriz hessiana calculada NxN ==> armazena o calculo da matriz nos pontos de aproximação da iteração
+    double *hessiana_calc;
+    hessiana_calc = (double *)malloc(n_variaveis * n_variaveis * sizeof(double *));
+    // memset(hessiana_calc, 0, (n_variaveis*n_variaveis) * (sizeof(double) ));
 
     // aloca delta => matriz coluna
     double *delta;
@@ -305,6 +289,7 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
             printf("TEMPO TOTAL: %1.14e\n", tempo);
             printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);
             printf("TEMPO SISTEMAS LINEARES: %1.14e\n", tempo_sistemas_lineares);
+            LIKWID_MARKER_STOP(markername);
             return aproximacao_inicial;
         }
 
@@ -318,6 +303,7 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
             printf("TEMPO TOTAL: %1.14e\n", tempo);
             printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);
             printf("TEMPO SISTEMAS LINEARES: %1.14e\n", tempo_sistemas_lineares);
+            LIKWID_MARKER_STOP(markername);
             return aproximacao_inicial;
         }
 
@@ -331,6 +317,7 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
             printf("TEMPO TOTAL: %1.14e\n", tempo);
             printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);
             printf("TEMPO SISTEMAS LINEARES: %1.14e\n", tempo_sistemas_lineares);
+            LIKWID_MARKER_STOP(markername);
             return aproximacao_inicial;
         }
     };
@@ -340,11 +327,10 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
     printf("TEMPO TOTAL: %1.14e\n", tempo);
     printf("TEMPO DERIVADAS: %1.14e\n", tempo_derivadas);
     printf("TEMPO SISTEMAS LINEARES: %1.14e\n", tempo_sistemas_lineares);
-    return aproximacao_inicial;
+    LIKWID_MARKER_STOP(markername);
+    
 
     // libera a memória da hessiana calc
-    for (i = 0; i < 1; i++)
-        free(hessiana_calc[i]);
     free(hessiana_calc);
 
     // libera a memória do gradiente calc
@@ -355,4 +341,7 @@ double *newton(char *expressao, double *aproximacao_inicial, double epsilon, int
 
     // libera a memória do vetor de norma gradiente
     free(norma_gradiente_calc);
+    
+    LIKWID_MARKER_CLOSE;
+    return aproximacao_inicial;
 }
