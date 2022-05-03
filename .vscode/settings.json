@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "matheval.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "limits": "cpp",
+        "type_traits": "c",
+        "utils.h": "c",
+        "assert.h": "c",
+        "random": "cpp",
+        "cctype": "c",
+        "parser.h": "c",
+        "sstream": "c",
+        "array": "c",
+        "string.h": "c"
+    }
+}

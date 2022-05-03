@@ -1,0 +1,9 @@
+Region Metodo_Newton:_64, Group 1: L3
+Region Vetor_Gradiente:_64, Group 1: L3
+Region Matriz_Hessiana:_64, Group 1: L3
+Region Resolucao_Sistema_Linear:_64, Group 1: L3
+| L3 access bandwidth [MBytes/s] |  2490.6178 |
+| L3 access bandwidth [MBytes/s] |  256228.1211 |
+| L3 access bandwidth [MBytes/s] |   18714.0133 |
+| L3 access bandwidth [MBytes/s] |    3393.6919 |
+ 
