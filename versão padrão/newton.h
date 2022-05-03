@@ -1,11 +1,11 @@
 #include "newton.c"
 
 /* calcula a matriz hessiana nos pontos de aproximação da iteração */
-void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas);
+void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_matriz_hessiana);
 
 
 /* calcula o vetor gradiente nos pontos de aproximação da iteração */
-void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas);
+void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_vetor_gradiente);
 
 
 /*  Encontra o elemento de maior valor de uma matriz na linha i e retorna a sua posição */

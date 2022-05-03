@@ -1,9 +1,5 @@
-|          CPI         |     1.7659 |
-|          CPI         |       0.6224 |
-|          CPI         |     0.2340 |
-|          CPI         |     1.7779 |
-|     DP [MFLOP/s]     |  3174.7928 |
-|     DP [MFLOP/s]     |    4475.1239 |
-|     DP [MFLOP/s]     |     1.4426 |
-|     DP [MFLOP/s]     |  3184.4217 |
+|     DP [MFLOP/s]     |  3073.1137 |
+|     DP [MFLOP/s]     |    2457.9730 |
+|     DP [MFLOP/s]     |     1.3669 |
+|     DP [MFLOP/s]     |  3082.7082 |
  
