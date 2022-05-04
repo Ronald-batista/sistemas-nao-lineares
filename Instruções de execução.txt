@@ -1,0 +1,2 @@
+execute o arquivo script.sh (verifique se possui permissão de execução)
+    ./script.sh

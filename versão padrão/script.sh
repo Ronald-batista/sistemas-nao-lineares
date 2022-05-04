@@ -1,5 +1,7 @@
 #/bin/bash
 
+./gera_rosenbrock.sh > entrada.dat
+
 make clean
 make
 

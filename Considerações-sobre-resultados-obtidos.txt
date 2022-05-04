@@ -1,0 +1,20 @@
+Observando os valores para "Tempo" em dimensões 10 e 4096, que são os extremos, na versão otimizada e na versão padrão é possivel ver uma melhora em todos trechos analisados da versão otimizada, 
+visto que as principais otimizações foram a alocação da matriz hessiana de forma contigua e o unrolling em algumas funções foi possivel verificar que ocorreu sim melhora no tempo de execução do programa.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+OBS: Acabei utilizando meu computador como ambiente de testes porque não consegui passar o arquivo para o computador remote da universidade pra executar, segui o passo disponibilizado no site do c3sl, mas deu permissao negada todas as vezes quando tentei utilzar o comando "scp".

@@ -1,0 +1,4 @@
+Region Metodo_Newton:_10, Group 1: L3
+Region Vetor_Gradiente:_10, Group 1: L3
+Region Matriz_Hessiana:_10, Group 1: L3
+Region Resolucao_Sistema_Linear:_10, Group 1: L3

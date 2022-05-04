@@ -1,5 +1,5 @@
-|  data cache miss ratio  |     0.0114 |
-|  data cache miss ratio  |       0.0536 |
-|  data cache miss ratio  |     0.0012 |
-|  data cache miss ratio  |     0.0114 |
+|  data cache miss ratio  |     0.0112 |
+|  data cache miss ratio  |       0.0524 |
+|  data cache miss ratio  |     0.0011 |
+|  data cache miss ratio  |     0.0113 |
  

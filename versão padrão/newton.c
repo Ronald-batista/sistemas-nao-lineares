@@ -28,21 +28,16 @@ void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_
 /* calcula o vetor gradiente nos pontos de aproximação da iteração
  */
 
-void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_vetor_gradiente)
+void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis)
 {
     int DIMENSAO = n_variaveis;
     int i;
-    double tempo = timestamp();
-
     string_t markername;
     markername = markerName("Vetor_Gradiente:", DIMENSAO);
     LIKWID_MARKER_START(markername);
     for (i = 0; i < n_variaveis; i++)
         gradiente_calc[i] = rosenbrock_dx(i, aproximacao_inicial, DIMENSAO);
     LIKWID_MARKER_STOP(markername);
-
-    tempo = timestamp() - tempo; // tempo gasto para o calculo das derivadas
-    *tempo_vetor_gradiente = tempo;
 }
 
 /*  Encontra o elemento de maior valor de uma matriz na linha i e retorna a sua posição
@@ -149,8 +144,8 @@ double norma_grad(double *gradiente_calc, double *aproximacao_inicial, int n_var
     int i;
     double norma, temp;
     double tempo;
-    calcula_vetor_gradiente(gradiente_calc, aproximacao_inicial, n_variaveis, tempo_vetor_gradiente);
     tempo = timestamp();
+    calcula_vetor_gradiente(gradiente_calc, aproximacao_inicial, n_variaveis);
     tempo = timestamp() - tempo; // tempo gasto para o calculo das derivadas
     *tempo_vetor_gradiente = tempo;
     // encontra a norma do vetor gradiente_calc
@@ -190,10 +185,10 @@ void calcula_delta(double **hessiana_calc, double *gradiente_calc, double *delta
     int i;
     int DIMENSAO = n_variaveis;
     double tempo;
-    double tempo_matriz_hessiana_aux;
+    double tempo_matriz = timestamp();
     calcula_matriz_hessiana(hessiana_calc, aproximacao_inicial, n_variaveis), &tempo_matriz_hessiana;
-    tempo_matriz_hessiana_aux = timestamp() - tempo_matriz_hessiana_aux; // tempo para resolução do sistema linear (eliminação de gauss + retrosubstituição)
-    *tempo_matriz_hessiana = tempo_matriz_hessiana_aux;
+    tempo_matriz = timestamp() - tempo_matriz; // tempo para resolução do sistema linear (eliminação de gauss + retrosubstituição)
+    *tempo_matriz_hessiana = tempo_matriz;
     // multiplica o gradiente calculado por -1
     for (i = 0; i < n_variaveis; i++)
     {
@@ -211,7 +206,7 @@ void calcula_delta(double **hessiana_calc, double *gradiente_calc, double *delta
     LIKWID_MARKER_STOP(markername);
 
     tempo = timestamp() - tempo; // tempo para resolução do sistema linear (eliminação de gauss + retrosubstituição)
-    *tempo_sistemas_lineares = *tempo_sistemas_lineares + tempo;
+    *tempo_sistemas_lineares = tempo;
 }
 
 /* Gera os proximos pontos de aproximação

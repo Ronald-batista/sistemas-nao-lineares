@@ -1,5 +1,5 @@
-|     DP [MFLOP/s]     |  9536.2770 |
-|     DP [MFLOP/s]     |    8443.6812 |
-|     DP [MFLOP/s]     |    34.6338 |
-|     DP [MFLOP/s]     | 10987.3229 |
+|     DP [MFLOP/s]     |  9619.8661 |
+|     DP [MFLOP/s]     |    8776.6674 |
+|     DP [MFLOP/s]     |    35.4039 |
+|     DP [MFLOP/s]     | 11087.0651 |
  

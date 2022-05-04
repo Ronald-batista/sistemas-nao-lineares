@@ -1,11 +1,11 @@
 #include "newton.c"
 
 /* calcula a matriz hessiana nos pontos de aproximação da iteração */
-void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas);
+void calcula_matriz_hessiana(double **matriz_hessiana_calc, double *aproximacao_inicial, int n_variaveis);
 
 
 /* calcula o vetor gradiente nos pontos de aproximação da iteração */
-void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas);
+void calcula_vetor_gradiente(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis);
 
 
 /*  Encontra o elemento de maior valor de uma matriz na linha i e retorna a sua posição */
@@ -25,7 +25,7 @@ void retrossubs(double **matriz, double *vetor_independente, double *delta, uint
 
 
 /* Calcula a norma do vetor gradientes nos pontos x^i */
-double norma_grad(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_derivadas);
+double norma_grad(double *gradiente_calc, double *aproximacao_inicial, int n_variaveis, double *tempo_vetor_gradiente);
 
 
 /* Calcula a norma de f(x) nos pontos x^i */
@@ -33,7 +33,7 @@ double funcao_apresentacao(void *expressao, double *aproximacao_inicial, int n_v
 
 
 /* Calcula o delta ==> resolve o sistema linear H(X^(i))𝚫^(i) = -𝛻f (X^(i)) */
-void calcula_delta(double **hessiana_calc, double *gradiente_calc, double *delta, double *aproximacao_inicial, int n_variaveis, double *tempo_sistemas_lineares, double *tempo_derivadas);
+void calcula_delta(double **hessiana_calc, double *gradiente_calc, double *delta, double *aproximacao_inicial, int n_variaveis, double *tempo_sistemas_lineares, double *tempo_matriz_hessiana);
 
 
 /* Gera os proximos pontos de aproximação */

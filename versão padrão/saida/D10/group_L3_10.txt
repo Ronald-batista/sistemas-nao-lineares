@@ -1,5 +1,5 @@
-| L3 access bandwidth [MBytes/s] | 23789.8097 |
-| L3 access bandwidth [MBytes/s] | 4.652031e+06 |
-| L3 access bandwidth [MBytes/s] | 2.416732e+06 |
-| L3 access bandwidth [MBytes/s] | 1.309390e+06 |
+| L3 access bandwidth [MBytes/s] |  2023.6939 |
+| L3 access bandwidth [MBytes/s] |  345477.9340 |
+| L3 access bandwidth [MBytes/s] |   70751.9840 |
+| L3 access bandwidth [MBytes/s] |   41746.3729 |
  

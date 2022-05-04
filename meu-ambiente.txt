@@ -1,0 +1,208 @@
+				< likwid-perfctr -a  >
+
+Group name	Description
+--------------------------------------------------------------------------------
+  MEM_DP	Main memory bandwidth in MBytes/s (experimental)
+FLOPS_SP	Single Precision MFLOP/s
+  ENERGY	Power and Energy consumption
+     MEM	Main memory bandwidth in MBytes/s (experimental)
+  BRANCH	Branch prediction miss rate/ratio
+      L2	L2 cache bandwidth in MBytes/s (experimental)
+  MEM_SP	Main memory bandwidth in MBytes/s (experimental)
+FLOPS_DP	Double Precision MFLOP/s
+    NUMA	Local and remote memory accesses (experimental)
+     TLB	TLB miss rate/ratio
+  DIVIDE	Divide unit information
+    DATA	Load to store ratio
+     CPI	Cycles per instruction
+   CLOCK	Cycles per instruction
+   CACHE	Data cache miss rate/ratio
+      L3	L3 cache bandwidth in MBytes/s
+  ICACHE	Instruction cache miss rate/ratio
+
+
+
+
+
+
+
+				< likwid-perfctr -i  >
+
+--------------------------------------------------------------------------------
+CPU name:	AMD Ryzen 7 3700X 8-Core Processor             
+CPU type:	AMD K17 (Zen2) architecture
+CPU clock:	3.59 GHz
+CPU family:	23
+CPU model:	113
+CPU short:	zen2
+CPU stepping:	0
+CPU features:	FP MMX SSE SSE2 HTT MMX RDTSCP MONITOR SSSE FMA SSE4.1 SSE4.2 AES AVX RDRAND AVX2 RDSEED SSE3 
+CPU arch:	x86_64
+--------------------------------------------------------------------------------
+Supported Intel processors:
+	Intel Core 2 65nm processor
+	Intel Core 2 45nm processor
+	Intel Xeon MP processor
+	Intel Atom 45nm processor
+	Intel Atom 32nm processor
+	Intel Atom 22nm processor
+	Intel Core Bloomfield processor
+	Intel Core Lynnfield processor
+	Intel Core Westmere processor
+	Intel Nehalem EX processor
+	Intel Westmere EX processor
+	Intel Core SandyBridge processor
+	Intel Xeon SandyBridge EN/EP processor
+	Intel Core IvyBridge processor
+	Intel Xeon IvyBridge EN/EP/EX processor
+	Intel Core Haswell processor
+	Intel Xeon Haswell EN/EP/EX processor
+	Intel Atom (Silvermont) processor
+	Intel Atom (Airmont) processor
+	Intel Xeon Phi (Knights Corner) Coprocessor
+	Intel Core Broadwell processor
+	Intel Xeon D Broadwell processor
+	Intel Xeon Broadwell EN/EP/EX processor
+	Intel Atom (Goldmont) processor
+	Intel Xeon Phi (Knights Landing) (Co)Processor
+	Intel Skylake processor
+	Intel Skylake SP processor
+	Intel Xeon Phi (Knights Mill) (Co)Processor
+	Intel Kabylake processor
+	Intel Coffeelake processor
+	Intel Cascadelake SP processor
+	Intel Tigerlake processor
+	Intel Icelake processor
+	Intel Rocketlake processor
+	Intel Icelake SP processor
+
+Supported AMD processors:
+	AMD Opteron single core 130nm processor
+	AMD Opteron Dual Core Rev E 90nm processor
+	AMD Opteron Dual Core Rev F 90nm processor
+	AMD K10 (Barcelona) processor
+	AMD K10 (Shanghai) processor
+	AMD K10 (Istanbul) processor
+	AMD K10 (Magny Cours) processor
+	AMD Interlagos processor
+	AMD Family 16 model - Kabini processor
+	AMD K17 (Zen) architecture
+	AMD K17 (Zen2) architecture
+	AMD K19 (Zen3) architecture
+
+Supported ARMv8 processors:
+	ARM Cortex A53
+	ARM Cortex A57
+	Cavium Thunder X (ARMv8)
+	Cavium Thunder X2 (ARMv8)
+	Fujitsu A64FX
+
+Supported ARMv7 processors:
+	ARM 7l architecture
+
+Supported POWER processors:
+	POWER8 architecture
+	POWER9 architecture
+
+
+
+
+
+
+			<  likwid-topology -g -c  >
+
+--------------------------------------------------------------------------------
+CPU name:	AMD Ryzen 7 3700X 8-Core Processor             
+CPU type:	AMD K17 (Zen2) architecture
+CPU stepping:	0
+********************************************************************************
+Hardware Thread Topology
+********************************************************************************
+Sockets:		1
+Cores per socket:	8
+Threads per core:	2
+--------------------------------------------------------------------------------
+HWThread        Thread        Core        Die        Socket        Available
+0               0             0           0          0             *                
+1               0             1           0          0             *                
+2               0             2           0          0             *                
+3               0             3           0          0             *                
+4               0             4           0          0             *                
+5               0             5           0          0             *                
+6               0             6           0          0             *                
+7               0             7           0          0             *                
+8               1             0           0          0             *                
+9               1             1           0          0             *                
+10              1             2           0          0             *                
+11              1             3           0          0             *                
+12              1             4           0          0             *                
+13              1             5           0          0             *                
+14              1             6           0          0             *                
+15              1             7           0          0             *                
+--------------------------------------------------------------------------------
+Socket 0:		( 0 8 1 9 2 10 3 11 4 12 5 13 6 14 7 15 )
+--------------------------------------------------------------------------------
+********************************************************************************
+Cache Topology
+********************************************************************************
+Level:			1
+Size:			32 kB
+Type:			Data cache
+Associativity:		8
+Number of sets:		64
+Cache line size:	64
+Cache type:		Non Inclusive
+Shared by threads:	2
+Cache groups:		( 0 8 ) ( 1 9 ) ( 2 10 ) ( 3 11 ) ( 4 12 ) ( 5 13 ) ( 6 14 ) ( 7 15 )
+--------------------------------------------------------------------------------
+Level:			2
+Size:			512 kB
+Type:			Unified cache
+Associativity:		8
+Number of sets:		1024
+Cache line size:	64
+Cache type:		Non Inclusive
+Shared by threads:	2
+Cache groups:		( 0 8 ) ( 1 9 ) ( 2 10 ) ( 3 11 ) ( 4 12 ) ( 5 13 ) ( 6 14 ) ( 7 15 )
+--------------------------------------------------------------------------------
+Level:			3
+Size:			16 MB
+Type:			Unified cache
+Associativity:		16
+Number of sets:		16384
+Cache line size:	64
+Cache type:		Non Inclusive
+Shared by threads:	8
+Cache groups:		( 0 8 1 9 2 10 3 11 ) ( 4 12 5 13 6 14 7 15 )
+--------------------------------------------------------------------------------
+********************************************************************************
+NUMA Topology
+********************************************************************************
+NUMA domains:		1
+--------------------------------------------------------------------------------
+Domain:			0
+Processors:		( 0 8 1 9 2 10 3 11 4 12 5 13 6 14 7 15 )
+Distances:		10
+Free memory:		7741.07 MB
+Total memory:		15927.8 MB
+--------------------------------------------------------------------------------
+
+
+********************************************************************************
+Graphical Topology
+********************************************************************************
+Socket 0:
++-----------------------------------------------------------------------------------------+
+| +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ |
+| |  0 8   | |  1 9   | |  2 10  | |  3 11  | |  4 12  | |  5 13  | |  6 14  | |  7 15  | |
+| +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ |
+| +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ |
+| |  32 kB | |  32 kB | |  32 kB | |  32 kB | |  32 kB | |  32 kB | |  32 kB | |  32 kB | |
+| +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ |
+| +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ |
+| | 512 kB | | 512 kB | | 512 kB | | 512 kB | | 512 kB | | 512 kB | | 512 kB | | 512 kB | |
+| +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ +--------+ |
+| +-----------------------------------------+ +-----------------------------------------+ |
+| |                  16 MB                  | |                  16 MB                  | |
+| +-----------------------------------------+ +-----------------------------------------+ |
++-----------------------------------------------------------------------------------------+
